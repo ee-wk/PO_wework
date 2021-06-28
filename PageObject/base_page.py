@@ -12,7 +12,8 @@ base_url = "https://work.weixin.qq.com/wework_admin/frame"
 class BasePage:
 
     def __init__(self, base_driver: WebDriver = None):
-        if base_driver is None:
+        """初始化浏览器"""
+        if base_driver is None:  # 首次调用，初始化浏览器
             self.driver = webdriver.Chrome()
             self.driver.implicitly_wait(10)
             self.driver.get(base_url)
@@ -21,26 +22,34 @@ class BasePage:
             for cookie in cookies:
                 self.driver.add_cookie(cookie)
             self.driver.get(base_url)
-        else:
+        else:  # 其他情况将传入的浏览器赋给self.driver
             self.driver = base_driver
 
     def close(self):
+        """封装关闭浏览器方法"""
         self.driver.close()
 
+    def quit(self):
+        self.driver.quit()
+
     def find_element(self, by, locator):
+        """封装定位单个元素方法，返回element"""
         element = self.driver.find_element(by, locator)
         return element
 
     def find_and_click(self, by, locator):
+        """封装点击方法"""
         element = self.driver.find_element(by, locator)
         element.click()
 
     def find_elements(self, by, locator):
+        """封装定位多个元素方法，返回element"""
         elements = self.driver.find_elements(by, locator)
         return elements
 
 
 def wait_clickable(driver, by, locator, timeout=10):
+    """封装显示等待方法"""
     expect = expected_conditions.element_to_be_clickable((by, locator))
     WebDriverWait(driver, timeout).until(expect)
 
